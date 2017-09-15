@@ -1,0 +1,2 @@
+for part 3 z = 100mm = 10cm
+x,y=0,0
