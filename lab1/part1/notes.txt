@@ -1,4 +1,8 @@
 snap1 z0=0
       z1=1.5" = 38.1mm
       z2=2*1.5"=2*38.1mm
+
+size of square in x-direction,y-dir 24.7mm
+
+right05.ppm used 5x5 x-squares,y-squares b/c leftmost was off-screen.
      
