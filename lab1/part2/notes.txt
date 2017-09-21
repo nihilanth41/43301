@@ -1,1 +1,3 @@
 left01,right01 in part2 is the same as left01,right01 in part 1
+
+- Still need to extract params on {left,right}_calib_data.mat

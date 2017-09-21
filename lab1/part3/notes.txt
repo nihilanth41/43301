@@ -1,2 +1,5 @@
 for part 3 z = 100mm = 10cm
 x,y=0,0
+
+- {left,right}_calib_data.mat saved with X_1(3)=100
+i.e. z offset set.
