@@ -3,7 +3,7 @@
 % Output matrix nx3, n = number of objects
 
 % read image specified by 'filename'
-img = imread('right02.ppm');
+img = imread('left01.ppm');
 
 I = rgb2gray(img);
 
@@ -25,7 +25,7 @@ L = bwlabel(BW);
 stats = regionprops(L, 'Centroid', 'Orientation');
 
 centroids = cat(1, stats.Centroid);
-imshow(BW)
-hold on 
-plot(centroids(:,1),centroids(:,2), 'b*')
-hold off
+%imshow(BW)
+%hold on 
+%plot(centroids(:,1),centroids(:,2), 'b*')
+%hold off
