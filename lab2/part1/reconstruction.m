@@ -23,27 +23,13 @@ end
 
 % At this point 'M' is our xyz position of the object(s) wrt the camera (i.e. world)
 
-% Position object-robot = Homography(robot-world) * Position object-world
-tx=0
-ty=0;
-tz=0;
-% No rotation, so R = eye(3) 
-% Might need to rotate 90 deg s.t. x,y axis of robot align with x,y axis of
-% camera.
-% See: Page 32 val_puma.pdf
-% Specifies the positition of the robot with respect to the camera. 
-% (Or is it the reverse?)
-% Origin of robot frame is at (+x, +y, -z) relative to the origin of the camera
-% frame.
-% Graphically camera frame looks like this:
-%   (0,0)----> y-axis(+)
-%        |
-%        |
-%        x-axis(+)
-%
-%                        Robot(0,0) somewhere over here.
-H_rw = [ 1 0 0 tx; 
-         0 1 0 ty;
+% Translations in 'mm' wrt new frame after rotation i.e. the same as camera 
+% i.e. move camera 0,0 to robot 0,0 
+tx=305;
+ty=358;
+tz=325-13;
+H_rw = [ 0 -1 0 tx; 
+         1 0 0 ty;
          0 0 1 tz; 
          0 0 0 1 ];
 

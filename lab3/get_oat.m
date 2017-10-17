@@ -1,4 +1,4 @@
-function [ OAT ] = get_oat( T )
+function [ XYZ,OAT ] = get_oat( T )
 %GET_OAT Summary of this function goes here
 %   Detailed explanation goes here
 % Lecture 16 Page 2
@@ -16,8 +16,12 @@ OAT(3) =  atan2(cast,cact);
 % Solve for A
 ca = cact/cos(OAT(3)); 
 sa = -(T(3,3));
+
+% Return
 OAT(2) = atan2(sa,ca);
-%XYZ = [ T(1,4) T(2,4) T(3,4) ];
+XYZ = [ T(1,4) T(2,4) T(3,4) ];
+
+OAT = OAT * (180/pi)
 
 end
 

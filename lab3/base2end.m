@@ -4,15 +4,13 @@ function [ T ] = base2end( theta )
 % OUTPUT: Transformation matrix T, 0A1*1A2*..*
 % Lecture 21 Page 2
 
-    % Numbers in inches ** need to convert to same units as used for projection
-    % matrix == mm? 
-    a2 = 8;
-    %a3 = -(5/16);
+    % Option 3, lengths in mm
+    a2 = 203.2; % mm - 8"
     a3 = 0; % Our robots a3 = 0 from lect21.
-    d2 = (2+(7/8)) + (2+(1/16)); % Option 3
-    d3 = 0;                      % Option 3
-    d4 = 8;
-    d6 = 2.202;
+    d2 = 125.4125 %mm - 4.9375" = (2+(7/8)) + (2+(1/16))" 
+    d3 = 0;     % Option 3
+    d4 = 203.2; % mm - 8"
+    d6 = 55.9308; % mm - 2.202"
     A1 = [ cos(theta(1)) 0 -sin(theta(1)) 0;
            sin(theta(1)) 0 cos(theta(1)) 0;
            0 -1 -0 0;
@@ -22,7 +20,7 @@ function [ T ] = base2end( theta )
            0 0 1 d2;
            0 0 0 1; ];
     A3 = [ cos(theta(3)) 0 sin(theta(3)) a3*cos(theta(3));
-           sin(theta(3)) 0 cos(theta(3)) a3*sin(theta(3));
+           sin(theta(3)) 0 -cos(theta(3)) a3*sin(theta(3));
            0 1 0 0;
            0 0 0 1; ];
     A4 = [ cos(theta(4)) 0 -sin(theta(4)) 0;
