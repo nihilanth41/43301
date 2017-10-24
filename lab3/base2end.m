@@ -13,6 +13,11 @@ theta = theta * pi/180;
     d6 = 55.9308; % mm - 2.202"
     A1 = [ cos(theta(1)) 0 -sin(theta(1)) 0;
            sin(theta(1)) 0 cos(theta(1)) 0;
+           0 -1 0 0;= 0;     % Option 3
+    d4 = 203.2; % mm - 8"
+    d6 = 55.9308; % mm - 2.202"
+    A1 = [ cos(theta(1)) 0 -sin(theta(1)) 0;
+           sin(theta(1)) 0 cos(theta(1)) 0;
            0 -1 0 0;
            0 0 0 1; ]; 
     A2 = [ cos(theta(2)) -sin(theta(2)) 0 a2*cos(theta(2));
