@@ -3,7 +3,7 @@ function [ T ] = base2end( theta )
 % INPUT: joint angles theta_1 .. theta_n  
 % OUTPUT: Transformation matrix T, 0A1*1A2*..*
 % Lecture 21 Page 2
-
+theta = theta * pi/180;
     % Option 3, lengths in mm
     a2 = 203.2; % mm - 8"
     a3 = 0; % Our robots a3 = 0 from lect21.
@@ -13,7 +13,7 @@ function [ T ] = base2end( theta )
     d6 = 55.9308; % mm - 2.202"
     A1 = [ cos(theta(1)) 0 -sin(theta(1)) 0;
            sin(theta(1)) 0 cos(theta(1)) 0;
-           0 -1 -0 0;
+           0 -1 0 0;
            0 0 0 1; ]; 
     A2 = [ cos(theta(2)) -sin(theta(2)) 0 a2*cos(theta(2));
            sin(theta(2)) cos(theta(2)) 0 a2*sin(theta(2));
@@ -35,6 +35,7 @@ function [ T ] = base2end( theta )
            sin(theta(6)) cos(theta(6)) 0 0;
            0 0 1 d6;
            0 0 0 1 ];
-    T = A1*A2*A3*A4*A5*A6;  
+    T = A1*A2*A3*A4*A5*A6;
+
 end
 
