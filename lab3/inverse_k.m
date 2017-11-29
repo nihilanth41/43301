@@ -14,7 +14,7 @@ link_length = d6; %d6 + gripper?
 % P_06 -> 6 wrt 0 == Given XYZ (of end effector)
 P_06 = XYZ;
 oat_radians = OAT * pi/180;
-a(1,1) = sin(oat_radians(1))*cos(oat_radians(2)) % soca = T(1,3);
+a(1,1) = sin(oat_radians(1))*cos(oat_radians(2)); % soca = T(1,3);
 a(1,2) = -(cos(oat_radians(1)) * cos(oat_radians(2))); % coca = -(T(2,3));
 a(1,3) = -(sin(oat_radians(2))); %sa = -(T(3,3));
 % P_46 -> 6 wrt 4 
@@ -46,9 +46,39 @@ expr_n2 = -((Pz*(a2+(a3*cos(theta_3))+(d4*sin(theta_3))))+(((d4*cos(theta_3))-(a
 expr_d2 = (Pz*((d4*cos(theta_3))-(a3*sin(theta_3)))) - ((a2+(a3*cos(theta_3))+(d4*sin(theta_3)))*sqrt((Px^2)+(Py^2)-(d2^2)));
 theta_2 = atan(expr_n2/expr_d2);
 
-joint_angles(1,1) = theta_1
-joint_angles(1,2) = theta_2
-joint_angles(1,3) = theta_3
+% Transformation from base to joint 3 T_03
+T_03 = [ cos(theta_1)*cos(theta_2+theta_3) -sin(theta_1) cos(theta_1)*sin(theta_2+theta_3) a2*cos(theta_1)*cos(theta_2)+a3*cos(theta_1)*cos(theta_2+theta_3)-d2*sin(theta_1);
+         sin(theta_1)*cos(theta_2+theta_3) cos(theta_1) sin(theta_1)*sin(theta_2+theta_3) a2*sin(theta_1)*cos(theta_2)+a3*sin(theta_1)*cos(theta_2+theta_3)+d2*cos(theta_1);
+         -sin(theta_2+theta_3) 0 cos(theta_2+theta_3) -a2*sin(theta_2)-a3*sin(theta_2+theta_3);
+         0 0 0 1 ];
+         
+% Construct T_06 to find T_36 to solve for theta_{4,5,6}
+O = oat_radians(1);
+A = oat_radians(2);
+T = oat_radians(3);
+R_06 = [ -sin(O)*sin(A)*cos(T)+cos(O)+sin(T) sin(O)*sin(A)*sin(T)+cos(O)*cos(T) sin(O)*cos(A);
+         cos(O)*sin(A)*cos(T)+sin(O)*sin(T) -cos(O)*sin(A)*sin(T)+sin(O)*cos(T) -cos(O)*cos(A);
+         -cos(A)*cos(T) cos(A)*sin(T) -sin(A); ];
+T_06 = R_06; 
+T_06(:,4) = XYZ';
+T_06(4,:) = [ 0 0 0 1 ];
+disp(T_06);
+
+T_36 = inv(T_03)*T_06;
+theta_6 = atan2(T_36(3,2), -T_36(3,1));
+theta_4 = atan2(T_36(2,3), T_36(1,3));
+theta_5 = acos(T_36(3,3)); % Inverse cos() 
+% theta_5 = atan2( (T_36(3,2)/sin(theta_6)), T_36(3,3 ); % Different
+% option.
+
+% Convert to degrees & return.
+joint_angles(1,1) = theta_1;
+joint_angles(1,2) = theta_2;
+joint_angles(1,3) = theta_3;
+joint_angles(1,4) = theta_4;
+joint_angles(1,5) = theta_5;
+joint_angles(1,6) = theta_6;
 joint_angles = joint_angles / (pi/180);
+disp(joint_angles);
 end
 
