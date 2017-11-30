@@ -29,8 +29,8 @@ Py=P_04(2);
 Pz=P_04(3);
 
 % Consider only (-/-) case
-expr_n1 = ( (Py*sqrt((Px^2)+(Py^2)-(d2^2)))-(d2*Px) ); % +-
-expr_d1 = ( (Px*sqrt((Px^2)+(Py^2)-(d2^2)))+(d2*Py) ); % +-
+expr_n1 = ( (-Py*sqrt((Px^2)+(Py^2)-(d2^2)))-(d2*Px) ); % +-
+expr_d1 = ( (-Px*sqrt((Px^2)+(Py^2)-(d2^2)))+(d2*Py) ); % +-
 theta_1 = atan2(expr_n1,expr_d1);
 
 % theta_2 -> depends on 
@@ -42,34 +42,42 @@ expr_d3 = ((2*a2*d4*gamma_sq_sub_r_sq)+(2*a2*a3*((Px^2)+(Py^2)+(Pz^2)-(a2^2)-(a3
 theta_3 = atan2(expr_n3,expr_d3);
 
 % theta_2:
-expr_n2 = -((Pz*(a2+(a3*cos(theta_3))+(d4*sin(theta_3))))+(((d4*cos(theta_3))-(a3*sin(theta_3)))*sqrt((Px^2)+(Py^2)-(d2^2))));
+expr_n2 = -((Pz*(a2+a3*cos(theta_3)+d4*sin(theta_3)))+(((d4*cos(theta_3))-(a3*sin(theta_3)))*sqrt((Px^2)+(Py^2)-(d2^2))));
 expr_d2 = (Pz*((d4*cos(theta_3))-(a3*sin(theta_3)))) - ((a2+(a3*cos(theta_3))+(d4*sin(theta_3)))*sqrt((Px^2)+(Py^2)-(d2^2)));
-theta_2 = atan(expr_n2/expr_d2);
+theta_2 = atan2(expr_n2,expr_d2);
 
 % Transformation from base to joint 3 T_03
-T_03 = [ cos(theta_1)*cos(theta_2+theta_3) -sin(theta_1) cos(theta_1)*sin(theta_2+theta_3) a2*cos(theta_1)*cos(theta_2)+a3*cos(theta_1)*cos(theta_2+theta_3)-d2*sin(theta_1);
-         sin(theta_1)*cos(theta_2+theta_3) cos(theta_1) sin(theta_1)*sin(theta_2+theta_3) a2*sin(theta_1)*cos(theta_2)+a3*sin(theta_1)*cos(theta_2+theta_3)+d2*cos(theta_1);
-         -sin(theta_2+theta_3) 0 cos(theta_2+theta_3) -a2*sin(theta_2)-a3*sin(theta_2+theta_3);
-         0 0 0 1 ];
-         
+% T_03 = [ cos(theta_1)*cos(theta_2+theta_3) -sin(theta_1) cos(theta_1)*sin(theta_2+theta_3) a2*cos(theta_1)*cos(theta_2)+a3*cos(theta_1)*cos(theta_2+theta_3)-d2*sin(theta_1);
+%          sin(theta_1)*cos(theta_2+theta_3) cos(theta_1) sin(theta_1)*sin(theta_2+theta_3) a2*sin(theta_1)*cos(theta_2)+a3*sin(theta_1)*cos(theta_2+theta_3)+d2*cos(theta_1);
+%          -sin(theta_2+theta_3) 0 cos(theta_2+theta_3) -a2*sin(theta_2)-a3*sin(theta_2+theta_3);
+%          0 0 0 1 ];
+
+R_03 = [ cos(theta_1)*cos(theta_2+theta_3) -sin(theta_1) cos(theta_1)*sin(theta_2+theta_3) 
+         sin(theta_1)*cos(theta_2+theta_3) cos(theta_1)  sin(theta_1)*sin(theta_2+theta_3)
+         -sin(theta_2+theta_3)             0             cos(theta_2+theta_3)];
+
 % Construct T_06 to find T_36 to solve for theta_{4,5,6}
 O = oat_radians(1);
 A = oat_radians(2);
 T = oat_radians(3);
-R_06 = [ -sin(O)*sin(A)*cos(T)+cos(O)+sin(T) sin(O)*sin(A)*sin(T)+cos(O)*cos(T) sin(O)*cos(A);
-         cos(O)*sin(A)*cos(T)+sin(O)*sin(T) -cos(O)*sin(A)*sin(T)+sin(O)*cos(T) -cos(O)*cos(A);
-         -cos(A)*cos(T) cos(A)*sin(T) -sin(A); ];
-T_06 = R_06; 
-T_06(:,4) = XYZ';
-T_06(4,:) = [ 0 0 0 1 ];
-disp(T_06);
+R_06 = [ -sin(O)*sin(A)*cos(T)+cos(O)*sin(T) sin(O)*sin(A)*sin(T)+cos(O)*cos(T)  sin(O)*cos(A);
+         cos(O)*sin(A)*cos(T)+sin(O)*sin(T)  -cos(O)*sin(A)*sin(T)+sin(O)*cos(T) -cos(O)*cos(A);
+         -cos(A)*cos(T)                      cos(A)*sin(T)                       -sin(A) ];
 
-T_36 = inv(T_03)*T_06;
-theta_6 = atan2(T_36(3,2), -T_36(3,1));
-theta_4 = atan2(T_36(2,3), T_36(1,3));
-theta_5 = acos(T_36(3,3)); % Inverse cos() 
-% theta_5 = atan2( (T_36(3,2)/sin(theta_6)), T_36(3,3 ); % Different
-% option.
+% T_06 = R_06; 
+% T_06(:,4) = XYZ';
+% T_06(4,:) = [ 0 0 0 1 ];
+% disp(T_06);
+
+%T_36 = inv(T_03)*T_06;
+R_36 = R_03' * R_06;
+theta_6 = atan2(R_36(3,2), -R_36(3,1));
+
+theta_4 = atan2(R_36(2,3), R_36(1,3));
+%theta_5 = acos(T_36(3,3)); % Inverse cos() 
+%theta_5 = atan2( (R_36(3,2))/sin(theta_6), R_36(3,3 )); % Different
+
+theta_5 = atan2(R_36(1,3)/cos(theta_4),R_36(3,3));% option.
 
 % Convert to degrees & return.
 joint_angles(1,1) = theta_1;
